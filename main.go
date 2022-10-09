@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"math"
 	"strings"
 	"time"
+	"github.com/fatih/color"
 )
 
 var months = [12]string{
@@ -37,9 +37,7 @@ func main() {
 	month := today.Month()
 	year := today.Year()
 
-	fmt.Printf("%s %d", months[month-1], year)
-	fmt.Println("")
-	fmt.Println(strings.Join(days[:], " "))
+	printHeader(month, year)
 
 	firstDay := beginningOfMonth(today).Weekday()
 	lastDay := endOfMonth(today)
@@ -53,13 +51,20 @@ func main() {
 	printOtherWeeks(day, lastDay)
 }
 
+func printHeader(month time.Month, year int) {
+	c1 := color.New(color.FgHiBlue).Add(color.Bold)
+	c2 := color.New(color.FgHiMagenta).Add(color.Bold)
+	c1.Printf("%s %d", months[month-1], year)
+	c1.Println("")
+	c2.Println(strings.Join(days[:], " "))
+}
+
 func printFirstWeek(firstDay time.Weekday, day *int) {
 	found := false
+	c1 := color.New(color.FgHiRed).Add(color.Bold)
 	for _, v := range days {
-
-
 		if firstDay.String()[0:3] == v {
-			fmt.Printf("  %d ", *day)
+			c1.Printf("  %d ", *day)
 			*day++
 			found = true
 			continue
@@ -78,7 +83,6 @@ func printFirstWeek(firstDay time.Weekday, day *int) {
 
 func printOtherWeeks(day int, e time.Time) {
 	idx := 0
-
 	for day <= e.Day() {
 		if day > 9 {
 			fmt.Printf(" %d ", day)
@@ -102,11 +106,4 @@ func beginningOfMonth(date time.Time) time.Time {
 
 func endOfMonth(date time.Time) time.Time {
 	return date.AddDate(0, 1, -date.Day())
-}
-
-func rgb(i int) (int, int, int) {
-	var f = 0.1
-	return int(math.Sin(f*float64(i)+0)*127 + 128),
-		int(math.Sin(f*float64(i)+2*math.Pi/3)*127 + 128),
-		int(math.Sin(f*float64(i)+4*math.Pi/3)*127 + 128)
 }
