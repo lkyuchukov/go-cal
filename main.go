@@ -39,32 +39,26 @@ func main() {
 
 	printHeader(month, year)
 
-	firstDay := beginningOfMonth(today).Weekday()
-	lastDay := endOfMonth(today)
-
 	day := 1
-
-	printFirstWeek(firstDay, &day)
-
-	fmt.Println("")
-
-	printOtherWeeks(day, lastDay)
+	printFirstWeek(&day, today)
+	printOtherWeeks(day, today)
 }
 
 func printHeader(month time.Month, year int) {
 	c1 := color.New(color.FgHiBlue).Add(color.Bold)
-	c2 := color.New(color.FgHiMagenta).Add(color.Bold)
+	c2 := color.New(color.FgHiCyan).Add(color.Bold)
 	c1.Printf("%s %d", months[month-1], year)
 	c1.Println("")
 	c2.Println(strings.Join(days[:], " "))
 }
 
-func printFirstWeek(firstDay time.Weekday, day *int) {
+func printFirstWeek(day *int, today time.Time) {
+	f := beginningOfMonth(today).Weekday()
 	found := false
-	c1 := color.New(color.FgHiRed).Add(color.Bold)
-	for _, v := range days {
-		if firstDay.String()[0:3] == v {
-			c1.Printf("  %d ", *day)
+
+	for i, v := range days {
+		if f.String()[0:3] == v {
+			printDay(*day, i, today)
 			*day++
 			found = true
 			continue
@@ -75,20 +69,18 @@ func printFirstWeek(firstDay time.Weekday, day *int) {
 		}
 
 		if found {
-			fmt.Printf("  %d", *day)
-			*day++
+			printDay(*day, i, today)
 		}
 	}
+
+	fmt.Println("")
 }
 
-func printOtherWeeks(day int, e time.Time) {
+func printOtherWeeks(day int, today time.Time) {
+	e := endOfMonth(today)
 	idx := 0
 	for day <= e.Day() {
-		if day > 9 {
-			fmt.Printf(" %d ", day)
-		} else {
-			fmt.Printf("  %d ", day)
-		}
+		printDay(day, idx, today)
 		idx++
 
 		if idx >= len(days) {
@@ -97,6 +89,30 @@ func printOtherWeeks(day int, e time.Time) {
 		}
 
 		day++
+	}
+}
+
+func printDay(day int, idx int, today time.Time) {
+	workdayColor := color.New(color.FgWhite).Add(color.Bold)
+	holidayColor := color.New(color.FgWhite)
+	currentDayColor := color.New(color.FgHiRed).Add(color.Bold)
+
+	if day > 9 {
+		if day == today.Day() {
+			currentDayColor.Printf(" %d ", day)	
+		} else if idx == 5 || idx == 6 {
+			holidayColor.Printf(" %d ", day)
+		} else {
+			workdayColor.Printf(" %d ", day)
+		}
+	} else {
+		if day == today.Day() {
+			currentDayColor.Printf("  %d ", day)
+		} else if idx == 5 || idx == 6 {
+			holidayColor.Printf("  %d ", day)
+		} else {
+			workdayColor.Printf("  %d ", day)
+		}
 	}
 }
 
