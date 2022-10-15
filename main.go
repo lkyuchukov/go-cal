@@ -42,6 +42,7 @@ func main() {
 	day := 1
 	printFirstWeek(&day, today)
 	printOtherWeeks(day, today)
+	fmt.Println("")
 }
 
 func printHeader(month time.Month, year int) {
@@ -70,6 +71,7 @@ func printFirstWeek(day *int, today time.Time) {
 
 		if found {
 			printDay(*day, i, today)
+			*day++
 		}
 	}
 
