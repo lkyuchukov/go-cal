@@ -20,13 +20,10 @@ universal_binaries:
 brews:
   -
     name: go-cal
-    homepage: "https://github.com/askcloudarchitech/mediumautopost"
+    homepage: "https://github.com/lkyuchukov/go-cal"
     tap:
       owner: lkyuchukov
       name: homebrew-go-cal
-    commit_author:
-      name: lkyuchukov
-      email: lkyuchukov17@gmail.com
 
 checksum:
   name_template: 'checksums.txt'
